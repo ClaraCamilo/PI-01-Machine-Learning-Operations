@@ -1,0 +1,5 @@
+venv
+credits.csv
+movies_dataset.csv
+__pycache__
+test.ipynb
