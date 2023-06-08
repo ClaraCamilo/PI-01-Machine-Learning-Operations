@@ -4,7 +4,7 @@ from datetime import datetime
 
 #instancia de fastApi
 app = FastAPI()
-df = pd.read_csv('C:/Users/Clarita/Desktop/HENRY/Proyecto_1/database/base_datos.csv')
+df = pd.read_csv('database/base_datos.csv')
 
 #crear entrada
 @app.get('/')
