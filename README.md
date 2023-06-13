@@ -36,6 +36,7 @@ El proceso ETL lo realicé con los dos Dataset proporcionados para prepararlo pa
 
 ## EDA
 Los datos resultantes del proceso de ETL se utilizaron para realizar el Análisis Exploratorio de Datos (EDA). Todas las columnas se analizaron con la ayuda de la herramienta ProfileReport de la biblioteca ydata_profiling. 
+[Pandas-profiling](profiling.html)
 
 Se miraron las correlaciones entre las variables, la cantidad de ceros por columna y, al encontrarse con la variable “Budget” que tiene su mayoría de valores en cero, se realizó una segunda matiz de correlación sin estos valores para comprender mejor las relaciones entre las mismas. 
 
