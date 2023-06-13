@@ -1,10 +1,19 @@
 from fastapi import FastAPI
 import pandas as pd
 from datetime import datetime
+import pickle
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+df = pd.read_csv('database/base_datos.csv')
+df_modelo = pd.read_csv("database\modelo.csv")
+df_modelo1 = df_modelo[['id', 'vote_average']]
+
+cosine_sim = cosine_similarity(df_modelo1)
 
 #instancia de fastApi
 app = FastAPI()
-df = pd.read_csv('database/base_datos.csv')
+
 
 #crear entrada
 @app.get('/')
@@ -113,3 +122,31 @@ def get_director(nombre_director: str):
             
     return {"director": nombre_director, 'retorno_total_director': retorno, "peliculas": l_titulo[:5], 'anio':l_fecha[:5],
             'retorno_pelicula':l_retorno[:5], 'budget_pelicula': l_costo[:5], 'revenue_pelicula': l_ganancia[:5]}
+    
+    
+@app.get('/recomendacion/{titulo}')
+def recomendacion(titulo:str):
+    #Convertir el titulo en el id de la película
+    for index, value in df_modelo["title"].iteritems():
+        if value == titulo:
+            id_pelicula = df_modelo.loc[index, "id"]
+    
+    # Obtener el índice de la película de interés
+    indice_pelicula = df_modelo1[df_modelo1['id'] == id_pelicula].index[0]
+
+    # Obtener los puntajes de similitud para todas las películas
+    sim_scores = list(enumerate(cosine_sim[indice_pelicula]))
+
+    # Ordenar las películas por puntaje de similitud en orden descendente
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # Obtener los top_n índices de las películas más similares (excluyendo la película de interés)
+    top_indices = [item[0] for item in sim_scores[1:6]]
+
+    # Obtener los ID de las películas más recomendadas
+    top_recomendaciones = df_modelo1.loc[top_indices, 'id'].tolist()
+    
+    #Convertir los id recomendados a los titulos de peliculas
+    titulos_recomendados = df_modelo.loc[df_modelo["id"].isin(top_recomendaciones), "title"].tolist()
+    
+    return {'lista recomendada': titulos_recomendados}
