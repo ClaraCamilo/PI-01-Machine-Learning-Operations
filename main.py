@@ -7,10 +7,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 df = pd.read_csv('database/base_datos.csv')
 df_modelo = pd.read_csv("database\modelo.csv")
-df_modelo1 = df_modelo[['id', 'vote_average']]
+df_modelo1 = df_modelo.head(2000).drop(["title"], axis=1)
 
-cosine_sim = cosine_similarity(df_modelo1)
-
+with open("database\cosine.pkl", "rb") as archivo:
+    cosine_sim = pickle.load(archivo)
+    
 #instancia de fastApi
 app = FastAPI()
 
